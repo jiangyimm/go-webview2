@@ -69,7 +69,7 @@ func NewChromium() *Chromium {
 	return e
 }
 
-func (e *Chromium) Embed(hwnd uintptr) bool {
+func (e *Chromium) Embed(hwnd uintptr, webPath string) bool {
 	e.hwnd = hwnd
 
 	dataPath := e.DataPath
@@ -83,8 +83,7 @@ func (e *Chromium) Embed(hwnd uintptr) bool {
 		currentExeName := filepath.Base(windows.UTF16ToString(currentExePath))
 		dataPath = filepath.Join(os.Getenv("AppData"), currentExeName)
 	}
-
-	res, err := createCoreWebView2EnvironmentWithOptions(nil, windows.StringToUTF16Ptr(dataPath), 0, e.envCompleted)
+	res, err := createCoreWebView2EnvironmentWithOptions(windows.StringToUTF16Ptr(webPath), windows.StringToUTF16Ptr(dataPath), 0, e.envCompleted)
 	if err != nil {
 		log.Printf("Error calling Webview2Loader: %v", err)
 		return false

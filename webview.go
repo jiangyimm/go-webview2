@@ -36,7 +36,7 @@ func setWindowContext(wnd uintptr, data interface{}) {
 }
 
 type browser interface {
-	Embed(hwnd uintptr) bool
+	Embed(hwnd uintptr, webPath string) bool
 	Resize()
 	Navigate(url string)
 	NavigateToString(htmlContent string)
@@ -59,13 +59,14 @@ type webview struct {
 }
 
 type WindowOptions struct {
-	Title  string
-	Width  uint
-	Height uint
-	Top    uint
-	Right  uint
-	IconId uint
-	Center bool
+	WebPath string
+	Title   string
+	Width   uint
+	Height  uint
+	Top     uint
+	Right   uint
+	IconId  uint
+	Center  bool
 }
 
 type WebViewOptions struct {
@@ -343,7 +344,7 @@ func (w *webview) CreateWithOptions(opts WindowOptions) bool {
 	_, _, _ = w32.User32UpdateWindow.Call(w.hwnd)
 	_, _, _ = w32.User32SetFocus.Call(w.hwnd)
 
-	if !w.browser.Embed(w.hwnd) {
+	if !w.browser.Embed(w.hwnd, opts.WebPath) {
 		return false
 	}
 	w.browser.Resize()
